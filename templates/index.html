@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block title %}Home {% endblock title %} {% block
+body %} {% include "messages.html" %}
+<h1 class="text-center">Posts</h1>
+<hr />
+<section id="details" class="details section">
+
+<div  class="container ection-title" data-aos="fade-up">
+  
+ {% for d in data %} 
+
+  <div class="container" style="margin-bottom: 40px;">
+
+    <div class="row gy-4 align-items-center features-item" >
+      <div
+        class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
+        <img src="{{url_for('static', filename='uploads/' + d.image)}}" class="img-fluid" alt="" style="width: 80%; max-width: 400px; height:100%; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"/>
+      </div>
+      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
+        <h3> {{d.title}} </h3>
+        <p class="fst-italic"> {{d.description}} </p>
+        <ul>
+          <li> <i class="bi bi-check"></i><span> Uploaded On : {{d.date}} </span> </li>
+          <li> <i class="bi bi-check"></i><span> Uploaded Time : {{d.time}} </span> </li>
+          <li> <i class="bi bi-check"></i><span> Uploaded By : {{d.name}} </span> </li>
+          <a href="/like/{{d.post_id}}" ><span> <h4> <i class="fa-regular fa-heart"></i> like</h4> </span> </li> </a>
+          <li> <i class="fa-regular fa-thumbs-up"></i> Liked By {{d.likes}}</li>
+
+<a href="/viewcomment/{{d.post_id}}"><i class="fa-solid fa-eye"></i> View Comments</a>
+
+          <hr>
+
+          <form action="/comment/{{ d.post_id }}" method="post">
+          <!-- Hidden input for user name -->
+           <input type="hidden" name="commented" value="{{ current_user.first_name }} {{ current_user.last_name }}"/>
+          <div class="form-group mb-3">
+           <label for="comment">Add Your Comments</label>
+           <textarea id="comment" name="comment" class="form-control mt-2" rows="3" required></textarea>
+          </div>
+
+  <!-- Submit button -->
+       <button type="submit" class="btn btn-primary">Add Comment</button>
+</form>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+</section>
+{% endblock body %}
