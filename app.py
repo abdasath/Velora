@@ -357,4 +357,5 @@ def acceptfriendrequest(requested_id, user_id):
         flash("Friend request accepted", "success")
     return redirect(url_for("profile"))
 
-app.run(debug=True)
+if __name__ == "__main__":
+    ppp.run(host='0.0.0.0', debug=False)
