@@ -41,7 +41,7 @@ class Signup(UserMixin,db.Model):
     last_name=db.Column(db.String(50))
     email=db.Column(db.String(100), unique=True)
     password=db.Column(db.String(1000))
-    phone=db.Column(db.Integer, unique=True)
+    phone=db.Column(db.String(20), unique=True)
     profileimg=db.Column(db.String(500))
 
     def get_id(self):
