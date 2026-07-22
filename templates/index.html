@@ -7,50 +7,61 @@
 <div class="container section-title" data-aos="fade-up">
 
   {% for d in data %}
-  <div class="container" style="margin-bottom: 40px;">
-    <div class="row gy-4 align-items-center features-item">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="img-fluid" alt=""
-          style="width: 80%; max-width: 400px; height:100%; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h3 class="fw-bold text-primary mb-3">{{d.title}}</h3>
-        <p class="mb-4" style="color: #555; text-transform: none !important; font-style: normal !important; font-size: 1.1rem; line-height: 1.6;">{{d.description}}</p>
-        <ul style="list-style: none; padding-left: 0;">
-          <li class="mb-2"><i class="bi bi-clock text-primary"></i> <span class="ms-2">Uploaded: <strong>{{ d.date|timeago(d.time) }}</strong></span></li>
-          <li class="mb-3"><i class="bi bi-person-circle text-primary"></i> <span class="ms-2">Uploaded By: <strong>{{d.name}}</strong></span></li>
+  <div class="row justify-content-center mb-5">
+    <div class="col-md-10 col-lg-8 col-xl-6">
+      <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+        
+        <!-- Card Header: User Info & Time -->
+        <div class="card-header bg-white border-0 d-flex align-items-center pt-4 pb-3 px-4">
+          <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold me-3" style="width: 45px; height: 45px; font-size: 1.2rem;">
+            {{ d.name[0] | upper }}
+          </div>
+          <div class="d-flex flex-column">
+            <h6 class="mb-0 fw-bold text-dark">{{d.name}}</h6>
+            <small class="text-muted" style="font-size: 0.85rem;">{{ d.date|timeago(d.time) }}</small>
+          </div>
+        </div>
 
-          <li class="mb-2">
+        <!-- Card Image -->
+        {% if d.image %}
+        <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="card-img-top rounded-0" alt="Post image" style="max-height: 600px; object-fit: contain; background-color: #f8f9fa;">
+        {% endif %}
+
+        <!-- Card Body: Content -->
+        <div class="card-body px-4 pt-3 pb-1">
+          <h5 class="card-title fw-bold text-primary mb-2">{{d.title}}</h5>
+          <p class="card-text text-dark mb-3" style="font-size: 1rem; line-height: 1.6;">{{d.description}}</p>
+        </div>
+
+        <!-- Card Footer: Actions (Like, Comment) -->
+        <div class="card-footer bg-white border-0 px-4 pb-4 pt-1">
+          <div class="d-flex align-items-center mb-3">
+            <!-- Like Button -->
             {% if d.post_id in liked_post_ids %}
-              <!-- Already liked: show filled heart, disabled -->
-              <span style="color: #e74c3c; font-size: 1.1rem; font-weight: bold;">
-                <i class="fa-solid fa-heart"></i> Liked
+              <span class="text-danger me-2" style="font-size: 1.3rem; cursor: default;">
+                <i class="fa-solid fa-heart"></i>
               </span>
             {% else %}
-              <!-- Not liked yet -->
-              <a href="/like/{{d.post_id}}" style="text-decoration: none; color: inherit;">
-                <span style="font-size: 1.1rem; font-weight: bold; color: #555;"><i class="fa-regular fa-heart"></i> Like</span>
+              <a href="/like/{{d.post_id}}" class="text-muted me-2 text-decoration-none" style="font-size: 1.3rem; transition: color 0.2s;">
+                <i class="fa-regular fa-heart"></i>
               </a>
             {% endif %}
-          </li>
+            <span class="text-muted fw-bold me-4" style="font-size: 0.95rem;">{{d.likes}} likes</span>
 
-          <li class="mb-4"><i class="fa-regular fa-thumbs-up text-primary"></i> <span class="ms-2">Liked by {{d.likes}} people</span></li>
-        </ul>
-
-        <a href="/viewcomment/{{d.post_id}}" class="btn btn-sm btn-outline-secondary mb-2">
-          <i class="fa-solid fa-eye"></i> View Comments
-        </a>
-
-        <hr>
-
-        <form action="/comment/{{d.post_id}}" method="post">
-          <input type="hidden" name="commented" value="{{ current_user.first_name }} {{ current_user.last_name }}"/>
-          <div class="form-group mb-3">
-            <label for="comment-{{d.post_id}}">Add a Comment</label>
-            <textarea id="comment-{{d.post_id}}" name="comment" class="form-control mt-2" rows="2" required></textarea>
+            <!-- View Comments -->
+            <a href="/viewcomment/{{d.post_id}}" class="text-muted text-decoration-none" style="font-size: 0.95rem;">
+               <i class="fa-regular fa-comment me-1"></i> View Comments
+            </a>
           </div>
-          <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
-        </form>
+
+          <!-- Add Comment Form -->
+          <form action="/comment/{{d.post_id}}" method="post" class="d-flex mt-3">
+            <input type="hidden" name="commented" value="{{ current_user.first_name }} {{ current_user.last_name }}"/>
+            <input type="text" name="comment" class="form-control border-0 bg-light rounded-pill px-4 me-2" placeholder="Add a comment..." required style="font-size: 0.95rem;">
+            <button type="submit" class="btn btn-primary rounded-pill px-4" style="font-size: 0.95rem; font-weight: 500;">Post</button>
+          </form>
+        </div>
+        
       </div>
     </div>
   </div>

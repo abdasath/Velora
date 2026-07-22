@@ -101,30 +101,56 @@
   <section id="details" class="details section">
     <div class="container" data-aos="fade-up">
       {% for d in getallmypost %}
-      <div class="container" style="margin-bottom: 40px;">
-        <div class="row gy-4 align-items-center features-item">
-          <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-            <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="img-fluid" alt=""
-              style="width: 80%; max-width: 400px; height:100%; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-          </div>
-          <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-            <h3>{{ d.title }}</h3>
-            <p class="fst-italic">{{ d.description }}</p>
-            <ul>
-              <li><i class="bi bi-clock text-primary"></i><span> Uploaded : <strong>{{ d.date|timeago(d.time) }}</strong></span></li>
-              <li><i class="bi bi-check"></i><span> Uploaded By : {{ d.name }}</span></li>
-              <li><i class="fa-regular fa-thumbs-up"></i> Liked by {{ d.likes }} people</li>
-            </ul>
-            <a href="/viewcomment/{{ d.post_id }}" class="btn btn-sm btn-outline-secondary me-2">
-              <i class="fa-solid fa-eye"></i> View Comments
-            </a>
-            <!-- Delete Post Button (POST form to avoid accidental deletion via URL) -->
-            <form action="/deletepost/{{ d.post_id }}" method="post" style="display:inline;"
-              onsubmit="return confirm('Are you sure you want to delete this post? This cannot be undone.');">
-              <button type="submit" class="btn btn-sm btn-danger">
-                <i class="fa-solid fa-trash"></i> Delete
-              </button>
-            </form>
+      <div class="row justify-content-center mb-5">
+        <div class="col-md-10 col-lg-8 col-xl-6">
+          <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+            
+            <!-- Card Header: User Info & Time -->
+            <div class="card-header bg-white border-0 d-flex align-items-center pt-4 pb-3 px-4">
+              <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold me-3" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                {{ d.name[0] | upper }}
+              </div>
+              <div class="d-flex flex-column">
+                <h6 class="mb-0 fw-bold text-dark">{{d.name}}</h6>
+                <small class="text-muted" style="font-size: 0.85rem;">{{ d.date|timeago(d.time) }}</small>
+              </div>
+            </div>
+    
+            <!-- Card Image -->
+            {% if d.image %}
+            <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="card-img-top rounded-0" alt="Post image" style="max-height: 600px; object-fit: contain; background-color: #f8f9fa;">
+            {% endif %}
+    
+            <!-- Card Body: Content -->
+            <div class="card-body px-4 pt-3 pb-1">
+              <h5 class="card-title fw-bold text-primary mb-2">{{d.title}}</h5>
+              <p class="card-text text-dark mb-3" style="font-size: 1rem; line-height: 1.6;">{{d.description}}</p>
+            </div>
+    
+            <!-- Card Footer: Actions (Like, Comment) -->
+            <div class="card-footer bg-white border-0 px-4 pb-4 pt-1">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center">
+                  <span class="text-muted fw-bold me-4" style="font-size: 0.95rem;">
+                    <i class="fa-solid fa-heart text-danger"></i> {{d.likes}} likes
+                  </span>
+                  
+                  <!-- View Comments -->
+                  <a href="/viewcomment/{{ d.post_id }}" class="text-muted text-decoration-none" style="font-size: 0.95rem;">
+                     <i class="fa-regular fa-comment me-1"></i> View Comments
+                  </a>
+                </div>
+                
+                <!-- Delete Post Button -->
+                <form action="/deletepost/{{ d.post_id }}" method="post" style="margin: 0;"
+                  onsubmit="return confirm('Are you sure you want to delete this post? This cannot be undone.');">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 20px; padding: 4px 12px;">
+                    <i class="fa-solid fa-trash"></i> Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
