@@ -179,8 +179,13 @@ def signup():
         # DB Checks
         fetchemail = Signup.query.filter_by(email=email).first()
         fetchphone = Signup.query.filter_by(phone=phoneNumber).first()
-        if fetchemail or fetchphone:
-            flash("An account with this email or phone already exists.", "danger")
+        
+        if fetchemail:
+            flash("An account with this email already exists.", "danger")
+            return render_template("signup.html", fname=firstName, lname=lastName, email=email, phone=phoneNumber)
+            
+        if fetchphone:
+            flash("An account with this phone number already exists.", "danger")
             return render_template("signup.html", fname=firstName, lname=lastName, email=email, phone=phoneNumber)
         
         gen_pass = generate_password_hash(password)
