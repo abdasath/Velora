@@ -64,6 +64,7 @@ body {
   color: var(--default-color);
   background-color: var(--background-color);
   font-family: var(--default-font);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 a {
@@ -1520,16 +1521,17 @@ section,
   position: relative;
 }
 
-.profileimg{
-
-  width: 160px;
+/* Change this */
+.profileimg {
+  width: 150px; /* Make width and height equal */
   height: 150px;
-  border-radius: 100px;
-  display: block;
-  margin: auto;
-  border: 8px solid	#c0c0c0 ;
+  border-radius: 50%; /* 50% is better for perfect circles */
+  border: 4px solid #4F46E5; /* Thinner, branded color border */
   object-fit: cover;
   margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .pricing .featured .popular {

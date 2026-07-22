@@ -8,15 +8,31 @@
 
   {% include "messages.html" %}
     
-{% for p in post%}
+  {% if post %}
+    <div class="comments-list mt-3 text-start">
+    {% for p in post %}
+      <div class="card mb-3 border-0 shadow-sm" style="background-color: #f8f9fa;">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <strong class="text-primary"><i class="bi bi-person-circle"></i> {{p.commentedBy}}</strong>
+            <small class="text-muted" style="font-size: 0.85rem;"><i class="bi bi-clock"></i> {{p.commentedOn|timeago}}</small>
+          </div>
+          <p class="mb-0" style="color: #333; font-size: 1.05rem; line-height: 1.5;">{{p.comment}}</p>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center mt-4 mb-4">
+      <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
+      <p class="text-muted mt-2">No comments yet.</p>
+    </div>
+  {% endif %}
+  
+  <div class="text-center mt-4">
+    <a href="/" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Posts</a>
+  </div>
 
-<h5><li style="color: 		#444444">{{p.comment}}</li></h5>
-<p style="color:		#696969">Commented By: {{p.commentedBy}}</p>
-<p style="color:		#696969">Commented On: {{p.commentedOn}}</p>
-<hr>
-
-
-{% endfor%}
 
 </div>
 {% endblock form %}

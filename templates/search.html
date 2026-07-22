@@ -1,0 +1,80 @@
+{% extends "auth.html" %}
+{% block title %}Search Results{% endblock title %}
+{% block form %}
+  <h1 class="text-center">Search</h1>
+  <form action="/search" method="get" class="d-flex mt-2" role="search">
+    <input class="form-control me-2" type="search" name="q" value="{{ query }}" placeholder="Search posts or users..." aria-label="Search">
+    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
+  </form>
+{% endblock form %}
+
+{% block body %}
+<div class="container mt-4 mb-5">
+
+  {% if query %}
+  <h5 class="text-muted mb-4">Results for: <strong>"{{ query }}"</strong></h5>
+
+  <!-- Users Section -->
+  <h4><i class="bi bi-people"></i> People</h4>
+  <hr>
+  {% if user_results %}
+  <div class="row mb-4">
+    {% for user in user_results %}
+    <div class="col-md-4 mb-3">
+      <div class="card p-3 d-flex flex-row align-items-center gap-3">
+        <img src="{{ user.profileimg if user.profileimg and user.profileimg.startswith('http') else url_for('static', filename='uploads/' + user.profileimg) }}"
+             width="55" height="55" style="border-radius:50%; object-fit:cover;" alt=""
+          onerror="this.src='{{ url_for('static', filename='assets/img/hero-img.png') }}'">
+        <div>
+          <strong>{{ user.first_name }} {{ user.last_name }}</strong><br>
+          <small class="text-muted">{{ user.email }}</small><br>
+          <a href="/connectfriend/{{ user.user_id }}" class="btn btn-sm btn-primary mt-1">
+            <i class="bi bi-person-plus"></i> Add Friend
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No users found matching "{{ query }}".</p>
+  {% endif %}
+
+  <!-- Posts Section -->
+  <h4 class="mt-4"><i class="bi bi-file-post"></i> Posts</h4>
+  <hr>
+  {% if post_results %}
+  {% for d in post_results %}
+  <div class="container mb-4">
+    <div class="row gy-4 align-items-center features-item">
+      <div class="col-md-4">
+        <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="img-fluid"
+             style="max-height: 220px; object-fit: cover; border-radius: 8px;" alt="Post Image"/>
+      </div>
+      <div class="col-md-8">
+        <h4>{{ d.title }}</h4>
+        <p>{{ d.description }}</p>
+        <small class="text-muted">By <strong>{{ d.name }}</strong> on {{ d.date }}</small><br>
+        <span><i class="fa-regular fa-thumbs-up"></i> {{ d.likes }} likes</span>
+        &nbsp;
+        <a href="/viewcomment/{{ d.post_id }}" class="btn btn-sm btn-outline-secondary mt-2">
+          <i class="fa-solid fa-eye"></i> View Comments
+        </a>
+      </div>
+    </div>
+    <hr>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="text-muted">No posts found matching "{{ query }}".</p>
+  {% endif %}
+
+  {% else %}
+  <div class="text-center py-5 text-muted">
+    <i class="bi bi-search" style="font-size: 3rem;"></i>
+    <p class="mt-3">Type something to search for users or posts.</p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock body %}

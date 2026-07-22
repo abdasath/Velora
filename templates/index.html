@@ -1,51 +1,101 @@
-{% extends "base.html" %} {% block title %}Home {% endblock title %} {% block
-body %} {% include "messages.html" %}
-<h1 class="text-center">Posts</h1>
+{% extends "base.html" %} {% block title %}Home{% endblock title %} {% block body %}
+{% include "messages.html" %}
+
+<h1 class="text-center" style="margin-top: 20px;">Posts</h1>
 <hr />
 <section id="details" class="details section">
+<div class="container section-title" data-aos="fade-up">
 
-<div  class="container ection-title" data-aos="fade-up">
-  
- {% for d in data %} 
-
+  {% for d in data %}
   <div class="container" style="margin-bottom: 40px;">
-
-    <div class="row gy-4 align-items-center features-item" >
-      <div
-        class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{url_for('static', filename='uploads/' + d.image)}}" class="img-fluid" alt="" style="width: 80%; max-width: 400px; height:100%; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"/>
+    <div class="row gy-4 align-items-center features-item">
+      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
+        <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="img-fluid" alt=""
+          style="width: 80%; max-width: 400px; height:100%; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
       </div>
       <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h3> {{d.title}} </h3>
-        <p class="fst-italic"> {{d.description}} </p>
-        <ul>
-          <li> <i class="bi bi-check"></i><span> Uploaded On : {{d.date}} </span> </li>
-          <li> <i class="bi bi-check"></i><span> Uploaded Time : {{d.time}} </span> </li>
-          <li> <i class="bi bi-check"></i><span> Uploaded By : {{d.name}} </span> </li>
-          <a href="/like/{{d.post_id}}" ><span> <h4> <i class="fa-regular fa-heart"></i> like</h4> </span> </li> </a>
-          <li> <i class="fa-regular fa-thumbs-up"></i> Liked By {{d.likes}}</li>
+        <h3 class="fw-bold text-primary mb-3">{{d.title}}</h3>
+        <p class="mb-4" style="color: #555; text-transform: none !important; font-style: normal !important; font-size: 1.1rem; line-height: 1.6;">{{d.description}}</p>
+        <ul style="list-style: none; padding-left: 0;">
+          <li class="mb-2"><i class="bi bi-clock text-primary"></i> <span class="ms-2">Uploaded: <strong>{{ d.date|timeago(d.time) }}</strong></span></li>
+          <li class="mb-3"><i class="bi bi-person-circle text-primary"></i> <span class="ms-2">Uploaded By: <strong>{{d.name}}</strong></span></li>
 
-<a href="/viewcomment/{{d.post_id}}"><i class="fa-solid fa-eye"></i> View Comments</a>
+          <li class="mb-2">
+            {% if d.post_id in liked_post_ids %}
+              <!-- Already liked: show filled heart, disabled -->
+              <span style="color: #e74c3c; font-size: 1.1rem; font-weight: bold;">
+                <i class="fa-solid fa-heart"></i> Liked
+              </span>
+            {% else %}
+              <!-- Not liked yet -->
+              <a href="/like/{{d.post_id}}" style="text-decoration: none; color: inherit;">
+                <span style="font-size: 1.1rem; font-weight: bold; color: #555;"><i class="fa-regular fa-heart"></i> Like</span>
+              </a>
+            {% endif %}
+          </li>
 
-          <hr>
-
-          <form action="/comment/{{ d.post_id }}" method="post">
-          <!-- Hidden input for user name -->
-           <input type="hidden" name="commented" value="{{ current_user.first_name }} {{ current_user.last_name }}"/>
-          <div class="form-group mb-3">
-           <label for="comment">Add Your Comments</label>
-           <textarea id="comment" name="comment" class="form-control mt-2" rows="3" required></textarea>
-          </div>
-
-  <!-- Submit button -->
-       <button type="submit" class="btn btn-primary">Add Comment</button>
-</form>
-
+          <li class="mb-4"><i class="fa-regular fa-thumbs-up text-primary"></i> <span class="ms-2">Liked by {{d.likes}} people</span></li>
         </ul>
+
+        <a href="/viewcomment/{{d.post_id}}" class="btn btn-sm btn-outline-secondary mb-2">
+          <i class="fa-solid fa-eye"></i> View Comments
+        </a>
+
+        <hr>
+
+        <form action="/comment/{{d.post_id}}" method="post">
+          <input type="hidden" name="commented" value="{{ current_user.first_name }} {{ current_user.last_name }}"/>
+          <div class="form-group mb-3">
+            <label for="comment-{{d.post_id}}">Add a Comment</label>
+            <textarea id="comment-{{d.post_id}}" name="comment" class="form-control mt-2" rows="2" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+        </form>
       </div>
     </div>
   </div>
-{% endfor %}
+  {% else %}
+  <div class="text-center py-5">
+    <p class="text-muted">No posts yet. Be the first to <a href="/post">create a post</a>!</p>
+  </div>
+  {% endfor %}
+
 </div>
 </section>
+
+<!-- Pagination Controls -->
+{% if pagination.pages > 1 %}
+<nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
+  <ul class="pagination">
+    {% if pagination.has_prev %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('index', page=pagination.prev_num) }}">← Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">← Previous</span></li>
+    {% endif %}
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        {% if page_num == pagination.page %}
+        <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a></li>
+        {% endif %}
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('index', page=pagination.next_num) }}">Next →</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Next →</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
 {% endblock body %}

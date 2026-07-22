@@ -1,9 +1,20 @@
 {% with messages=get_flashed_messages(with_categories=true) %}
 {% if messages %} 
 {% for category,message in messages %}
-<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+<div class="alert alert-{{ category }} alert-dismissible fade show auto-dismiss" role="alert">
     <strong>{{ message }}</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %} 
 {% endif %} 
 {% endwith %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+      document.querySelectorAll(".auto-dismiss").forEach(function (el) {
+        var alert = bootstrap.Alert.getOrCreateInstance(el);
+        alert.close();
+      });
+    }, 4000);
+  });
+</script>

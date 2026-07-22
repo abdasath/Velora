@@ -1,15 +1,82 @@
 {% extends "auth.html" %}
-{% block title %} About {% endblock title %}
+{% block title %} About Us - Velora {% endblock title %}
+
 {% block form %}
+<h1 class="text-center fw-bold mb-3" style="color: white; font-size: 3.5rem;">About Velora</h1>
+<p class="text-center text-white-50 mb-0" style="font-size: 1.1rem;">Learn more about our mission and community</p>
+{% endblock form %}{% block body %}
+<div class="container py-5 mt-4 mb-5">
+  
+  <div class="row align-items-center mb-5 mt-4">
+    <div class="col-lg-6 mb-4 mb-lg-0 text-center text-lg-start" data-aos="fade-right">
+      <p class="lead text-muted" style="line-height: 1.8; font-size: 1.2rem;">
+        At Velora, we believe in the power of meaningful connections. Our platform is built to help individuals share their voice, showcase their passions, and grow their personal or professional network.
+      </p>
+    </div>
+    <div class="col-lg-6 text-center" data-aos="fade-left">
+      <i class="bi bi-globe2 text-primary" style="font-size: 10rem; opacity: 0.9; text-shadow: 0 10px 20px rgba(0,0,0,0.1);"></i>
+    </div>
+  </div>
 
-<h1 class="text-center">About Us</h1>
-<div class="card p-3">
-
-
-  <p style="color: #444444;">
-
-At Velora, we believe in the power of meaningful connections. Our platform is built to help individuals share their voice, showcase their passions, and grow their personal or professional network. Whether you're posting updates, sharing ideas, or connecting with like-minded people, we offer a space where every profile matters and every connection counts. Designed with simplicity and purpose, our goal is to bring people closer — one post, one conversation, one friend at a time. Join us and be part of a growing community that values authenticity, collaboration, and connection.
-  </p>
-
+  <div class="row g-4 mt-2">
+    <!-- Card 1 -->
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="card h-100 border-0 shadow-sm text-center p-4 transition-hover" style="border-radius: 12px;">
+        <div class="mb-3">
+          <i class="bi bi-megaphone text-primary" style="font-size: 3rem;"></i>
+        </div>
+        <h4 class="fw-bold">Share Your Voice</h4>
+        <p class="text-muted mt-2" style="font-size: 1.05rem;">
+          Whether you're posting updates or sharing ideas, we offer a safe space where every profile matters and your voice is heard.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Card 2 -->
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+      <div class="card h-100 border-0 shadow-sm text-center p-4 transition-hover" style="border-radius: 12px;">
+        <div class="mb-3">
+          <i class="bi bi-people text-primary" style="font-size: 3rem;"></i>
+        </div>
+        <h4 class="fw-bold">Build Connections</h4>
+        <p class="text-muted mt-2" style="font-size: 1.05rem;">
+          Connect with like-minded people globally. Our goal is to bring people closer — one conversation and one friend at a time.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Card 3 -->
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+      <div class="card h-100 border-0 shadow-sm text-center p-4 transition-hover" style="border-radius: 12px;">
+        <div class="mb-3">
+          <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+        </div>
+        <h4 class="fw-bold">Authentic Community</h4>
+        <p class="text-muted mt-2" style="font-size: 1.05rem;">
+          Join us and be part of a growing, positive community that deeply values authenticity, collaboration, and true human connection.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="text-center mt-5 pt-5 pb-3 border-top" data-aos="zoom-in" data-aos-delay="400">
+    <h3 class="mb-4 fw-bold">Ready to start connecting?</h3>
+    <a href="/post" class="btn btn-primary btn-lg px-4 me-2 shadow-sm mb-2" style="border-radius: 30px;">
+      <i class="bi bi-pencil-square"></i> Create a Post
+    </a>
+    <a href="/connect" class="btn btn-outline-secondary btn-lg px-4 shadow-sm mb-2" style="border-radius: 30px;">
+      <i class="bi bi-person-plus"></i> Find Friends
+    </a>
+  </div>
 </div>
-{% endblock form %}
+
+<style>
+  .transition-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .transition-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  }
+</style>
+{% endblock body %}

@@ -9,16 +9,16 @@
     
  <form action="/signup" method="post">
     <div class="form-group">
-        <input class="form-control mb-2 p-3" type="text" name="fname" placeholder="Enter First Name" required> 
+        <input class="form-control mb-2 p-3" type="text" name="fname" value="{{ fname|default('') }}" placeholder="Enter First Name" required> 
     </div>
     <div class="form-group">
-        <input class="form-control mb-2 p-3" type="text" name="lname" placeholder="Enter Last Name" required> 
+        <input class="form-control mb-2 p-3" type="text" name="lname" value="{{ lname|default('') }}" placeholder="Enter Last Name" required> 
     </div>
     <div class="form-group">
-        <input class="form-control mb-2 p-3" type="email" name="email" placeholder="Enter Email" required> 
+        <input class="form-control mb-2 p-3" type="email" name="email" value="{{ email|default('') }}" placeholder="Enter Email" required> 
     </div>
     <div class="form-group">
-        <input class="form-control mb-2 p-3" type="number" name="phone" placeholder="Enter Phone Number" required> 
+        <input class="form-control mb-2 p-3" type="number" name="phone" value="{{ phone|default('') }}" placeholder="Enter Phone Number" required> 
     </div>
     <div class="form-group">
         <input class="form-control mb-2 p-3" type="password" name="pass1" placeholder="Enter Password" required> 
@@ -29,6 +29,10 @@
 
     <div class="d-grid gap-3">
         <button type="submit" class="btn btn-primary">Signup</button>
+    </div>
+
+    <div class="text-center mt-3">
+        <small class="mb-0 text-muted">Already have an account? <a href="/login" class="text-decoration-none fw-bold">Login here</a></small>
     </div>
 
 

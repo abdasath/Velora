@@ -1,41 +1,56 @@
 {% extends "auth.html" %}
 {% block title %} Post {% endblock title %}
 {% block form %}
-
-<h1 class="text-center">Add New Posts</h1>
-<div class="card p-3">
-
-  {% include "messages.html" %}
-    
- <form action="/post" method="post" enctype="multipart/form-data">
-    
-    <div class="form-group">
-        <input class="form-control mb-2 p-3" type="hidden" value="{{current_user.email}}" name="email" placeholder="Enter Email" required> 
-    </div>
-
-    <div class="form-group">
-        <input class="form-control mb-2 p-3" type="hidden" value="{{current_user.first_name}} {{current_user.last_name}}" name="name" required> 
-    </div>
-    
-    <div class="form-group">
-        <input class="form-control mb-2 p-3" type="text" name="title" placeholder="Enter Post Title" required> 
-    </div>
-
-    <div class="form-group">
-        <textarea class="form-control mb-2 p-3" type="text" name="description" placeholder="Enter Post Description" required></textarea>
-    </div>
-
-    <div class="form-group">
-        <input class="form-control mb-2 p-3" type="file" name="image" required> 
-    </div>
-    
-
-    <div class="d-grid gap-3">
-        <button type="submit" class="btn btn-primary">Upload</button>
-    </div>
-
-
- </form>
-
-</div>
+<h1 class="text-center fw-bold mb-3" style="color: white; font-size: 3.5rem;">Create Post</h1>
+<p class="text-center text-white-50 mb-0" style="font-size: 1.1rem;">Share your thoughts and moments with the community</p>
 {% endblock form %}
+
+{% block body %}
+<div class="container mt-5 mb-5" data-aos="fade-up">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow border-0 rounded-4 overflow-hidden">
+        <div class="card-header text-white p-4" style="background: linear-gradient(135deg, #4f46e5, #3b82f6);">
+          <h4 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i> Add a New Post</h4>
+        </div>
+        
+        <div class="card-body p-5 bg-white">
+          {% include "messages.html" %}
+            
+          <form action="/post" method="post" enctype="multipart/form-data">
+            <!-- Hidden inputs -->
+            <input type="hidden" value="{{current_user.email}}" name="email"> 
+            <input type="hidden" value="{{current_user.first_name}} {{current_user.last_name}}" name="name"> 
+            
+            <div class="mb-4">
+              <label for="title" class="form-label fw-bold text-secondary">Post Title</label>
+              <input class="form-control form-control-lg bg-light border-0 px-4 py-3" type="text" name="title" id="title" placeholder="Give your post a catchy title" required> 
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label fw-bold text-secondary">Description</label>
+              <textarea class="form-control bg-light border-0 px-4 py-3" name="description" id="description" rows="5" placeholder="What's on your mind?" required></textarea>
+            </div>
+
+            <div class="mb-5 p-4 bg-light rounded-4 border">
+              <label class="fw-bold mb-3 d-block text-dark"><i class="bi bi-link-45deg text-primary me-2"></i>Image URL</label>
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <input class="form-control bg-white shadow-sm py-3" type="url" name="image_url" placeholder="https://example.com/image.jpg" required> 
+                </div>
+              </div>
+              
+            </div>
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" style="background: linear-gradient(135deg, #4f46e5, #3b82f6); border: none; padding: 15px;">
+                Publish Post <i class="bi bi-send ms-2"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

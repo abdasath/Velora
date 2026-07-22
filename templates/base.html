@@ -81,16 +81,20 @@
 
       <div class="container">
         <div class="row gy-4 justify-content-between">
-          <div class="col-lg-4 order-lg-last hero-img" data-aos="zoom-out" data-aos-delay="100">
-            <img src="/static/assets/img/hero-img.png" class="img-fluid animated" alt="">
+          <div class="col-lg-4 order-lg-last hero-img position-relative" data-aos="zoom-out" data-aos-delay="100" style="min-height: 550px;">
+            <img src="/static/assets/img/hero-phone-1.jpg" class="animated" alt="Velora Article" style="position: absolute; right: 35%; top: 0; height: 500px; width: auto; border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); z-index: 1;">
+            <img src="/static/assets/img/hero-phone-2.jpg" class="animated" alt="Velora Feed" style="position: absolute; right: 0; top: 15%; height: 500px; width: auto; border-radius: 35px; box-shadow: -10px 25px 50px rgba(0,0,0,0.25); z-index: 2; animation-delay: 0.5s;">
           </div>
 
           <div class="col-lg-6  d-flex flex-column justify-content-center" data-aos="fade-in">
             <h1>Welcome to <span>Velora</span></h1>
-            <p>We are team of talented designers making websites with Velora</p>
-            <div class="d-flex">
-              <a href="#about" class="btn-get-started">Get Started</a>
-              <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+            <p>Share your stories, connect with friends, and discover amazing content from around the world.</p>
+            <div class="d-flex mt-4">
+              {% if current_user.is_authenticated %}
+                <a href="/post" class="btn-get-started">Create a Post</a>
+              {% else %}
+                <a href="/signup" class="btn-get-started">Get Started</a>
+              {% endif %}
             </div>
           </div>
 

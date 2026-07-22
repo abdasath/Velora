@@ -1,28 +1,70 @@
 {% extends "auth.html" %}
 {% block title %} Contact {% endblock title %}
 {% block form %}
-
-<h1 class="text-center">Contact Us</h1>
-<div class="card p-3">
-
-  {% include "messages.html" %}
-    
- <form action="/contact/" method="post"  >
-    
-    <div class="form-group m-"> 
-        <input class="form-control  mb-2 p-3 " type="email" name="email" placeholder="Enter Email" required> <!-- -->
-    </div>
-    
-    <div class="form-group ">
-        <textarea name="desc" id="" class="form-control mb-3" cols="10" rows="10" required></textarea>
-    </div>
-
-    <div class="d-grid gap-3">
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-
-
- </form>
-
-</div>
+<h1 class="text-center fw-bold mb-3" style="color: white; font-size: 3.5rem;">Get In Touch</h1>
+<p class="text-center text-white-50 mb-0" style="font-size: 1.1rem;">We'd love to hear from you. Send us a message!</p>
 {% endblock form %}
+
+{% block body %}
+<section class="contact section pt-5 pb-5">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4">
+      
+      <div class="col-lg-5">
+        <div class="info-wrap p-5 rounded-4 shadow-sm h-100" style="background-color: #f8f9fa;">
+          <h3 class="fw-bold mb-4" style="color: #4a4a4a;">Contact Information</h3>
+          <p class="text-muted mb-4">Fill out the form and our team will get back to you within 24 hours.</p>
+          
+          <div class="info-item d-flex align-items-center mb-4">
+            <i class="bi bi-geo-alt flex-shrink-0 fs-3 text-primary me-4"></i>
+            <div>
+              <h5 class="mb-1 fw-bold text-dark">Location:</h5>
+              <p class="mb-0 text-muted">A108 Adam Street, New York, NY 535022</p>
+            </div>
+          </div>
+
+          <div class="info-item d-flex align-items-center mb-4">
+            <i class="bi bi-envelope flex-shrink-0 fs-3 text-primary me-4"></i>
+            <div>
+              <h5 class="mb-1 fw-bold text-dark">Email:</h5>
+              <p class="mb-0 text-muted">info@velora.com</p>
+            </div>
+          </div>
+
+          <div class="info-item d-flex align-items-center">
+            <i class="bi bi-phone flex-shrink-0 fs-3 text-primary me-4"></i>
+            <div>
+              <h5 class="mb-1 fw-bold text-dark">Call:</h5>
+              <p class="mb-0 text-muted">+1 5589 55488 55</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <form action="/contact/" method="post" class="p-5 rounded-4 shadow-sm bg-white h-100">
+          {% include "messages.html" %}
+          <div class="row gy-4">
+            
+            <div class="col-md-12">
+              <label for="email" class="form-label fw-bold text-secondary">Your Email Address</label>
+              <input type="email" class="form-control form-control-lg bg-light border-0" name="email" id="email" placeholder="hello@example.com" required>
+            </div>
+            
+            <div class="col-md-12">
+              <label for="desc" class="form-label fw-bold text-secondary">Your Message</label>
+              <textarea class="form-control bg-light border-0 p-3" name="desc" id="desc" rows="5" placeholder="How can we help you?" required></textarea>
+            </div>
+
+            <div class="col-md-12 text-center mt-4">
+              <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow" style="background: linear-gradient(135deg, #4f46e5, #3b82f6); border: none; padding: 12px;">Send Message <i class="bi bi-send ms-2"></i></button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock body %}
