@@ -1,7 +1,14 @@
 {% extends "base.html" %} {% block title %}Home{% endblock title %} {% block body %}
 {% include "messages.html" %}
 
-<h1 class="text-center" style="margin-top: 20px;">Posts</h1>
+<style>
+  @media (max-width: 767px) {
+    .mobile-posts-title {
+      margin-top: 12rem !important;
+    }
+  }
+</style>
+<h1 class="text-center fw-bold mobile-posts-title mt-md-4 pt-md-0 text-primary">Posts</h1>
 <hr />
 <section id="details" class="details section">
 <div class="container" data-aos="fade-up">
