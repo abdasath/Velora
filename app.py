@@ -19,6 +19,13 @@ login_manager=LoginManager(app)
 login_manager.login_view='login'
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'mysql+pymysql://root:@localhost/socialmd')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+    "pool_timeout": 900,
+    "pool_size": 10,
+    "max_overflow": 5,
+}
 db = SQLAlchemy(app)
 
 
