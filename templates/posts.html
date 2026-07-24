@@ -14,7 +14,7 @@
           <h4 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i> Add a New Post</h4>
         </div>
         
-        <div class="card-body p-4 p-md-5 bg-white">
+        <div class="card-body p-3 p-md-5 bg-white">
           {% include "messages.html" %}
             
           <form action="/post" method="post" enctype="multipart/form-data">
@@ -24,15 +24,15 @@
             
             <div class="mb-4">
               <label for="title" class="form-label fw-bold text-secondary">Post Title</label>
-              <input class="form-control form-control-lg bg-light border-0 px-4 py-3" type="text" name="title" id="title" placeholder="Give your post a catchy title" required> 
+              <input class="form-control form-control-lg bg-light border-0 px-3 px-md-4 py-3" type="text" name="title" id="title" placeholder="Give your post a catchy title" required> 
             </div>
 
             <div class="mb-4">
               <label for="description" class="form-label fw-bold text-secondary">Description</label>
-              <textarea class="form-control bg-light border-0 px-4 py-3" name="description" id="description" rows="5" placeholder="What's on your mind?" required></textarea>
+              <textarea class="form-control bg-light border-0 px-3 px-md-4 py-3" name="description" id="description" rows="5" placeholder="What's on your mind?" required></textarea>
             </div>
 
-            <div class="mb-5 p-4 bg-light rounded-4 border">
+            <div class="mb-5 p-3 p-md-4 bg-light rounded-4 border">
               <label class="fw-bold mb-3 d-block text-dark"><i class="bi bi-link-45deg text-primary me-2"></i>Image URL</label>
               <div class="row g-3">
                 <div class="col-md-12">
