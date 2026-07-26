@@ -132,7 +132,7 @@
       {% for d in getallmypost %}
       <div class="row justify-content-center mb-5">
         <div class="col-12 col-md-10 col-lg-8 col-xl-6">
-          <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+          <div class="card shadow-lg border-0 mb-4" style="border-radius: 12px; overflow: hidden;">
             
             <!-- Card Header: User Info & Time -->
             <div class="card-header bg-white border-0 d-flex align-items-center pt-4 pb-3 px-4">
@@ -145,15 +145,60 @@
               </div>
             </div>
     
-            <!-- Card Image -->
+            <!-- Card Image(s): carousel if multiple, plain img if single -->
             {% if d.image %}
-            <img src="{{ d.image if d.image and d.image.startswith('http') else url_for('static', filename='uploads/' + d.image) }}" class="card-img-top rounded-0" alt="Post image" style="max-height: 600px; object-fit: contain; background-color: #f8f9fa;">
+              {% set images = d.image.split('|') %}
+              {% if images|length == 1 %}
+                <img src="{{ images[0] }}" class="card-img-top rounded-0" alt="Post image"
+                  style="max-height: 600px; object-fit: contain; background-color: #f8f9fa;">
+              {% else %}
+                <div id="pcarousel-{{ d.post_id }}" class="carousel slide" data-bs-ride="false" data-bs-wrap="false">
+                  <div class="carousel-indicators">
+                    {% for img in images %}
+                    <button type="button"
+                      data-bs-target="#pcarousel-{{ d.post_id }}"
+                      data-bs-slide-to="{{ loop.index0 }}"
+                      {% if loop.first %}class="active" aria-current="true"{% endif %}
+                      aria-label="Image {{ loop.index }}"></button>
+                    {% endfor %}
+                  </div>
+                  <div class="carousel-inner">
+                    {% for img in images %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                      <img src="{{ img }}" class="d-block w-100" alt="Post image {{ loop.index }}"
+                        style="max-height: 500px; object-fit: contain; background-color: #f8f9fa;">
+                      <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-dark bg-opacity-60 rounded-pill px-2 py-1" style="font-size:0.75rem;">
+                          {{ loop.index }}/{{ images|length }}
+                        </span>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <button class="carousel-control-prev" type="button"
+                    data-bs-target="#pcarousel-{{ d.post_id }}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  </button>
+                  <button class="carousel-control-next" type="button"
+                    data-bs-target="#pcarousel-{{ d.post_id }}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  </button>
+                </div>
+              {% endif %}
             {% endif %}
     
             <!-- Card Body: Content -->
             <div class="card-body px-4 pt-3 pb-1">
               <h5 class="card-title fw-bold text-primary mb-2">{{d.title}}</h5>
-              <p class="card-text text-dark mb-3" style="font-size: 1rem; line-height: 1.6;">{{d.description}}</p>
+              <p class="card-text text-dark mb-1" style="font-size: 1rem; line-height: 1.6;">
+                {% for word in d.description.split() %}
+                  {% if word.startswith('#') %}
+                    <span style="color: #1877f2; font-weight: 600; cursor: pointer;">{{ word }} </span>
+                  {% else %}
+                    {{ word }}
+                  {% endif %}
+                {% endfor %}
+              </p>
             </div>
     
             <!-- Card Footer: Actions (Like, Comment) -->
@@ -170,13 +215,20 @@
                   </a>
                 </div>
                 
-                <!-- Delete Post Button -->
-                <form action="/deletepost/{{ d.post_id }}" method="post" style="margin: 0;"
-                  onsubmit="return confirm('Are you sure you want to delete this post? This cannot be undone.');">
-                  <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 20px; padding: 4px 12px;">
-                    <i class="fa-solid fa-trash"></i> Delete
-                  </button>
-                </form>
+                <div class="d-flex gap-2">
+                  <!-- Edit Post Button -->
+                  <a href="/editpost/{{ d.post_id }}" class="btn btn-sm btn-outline-primary" style="border-radius: 20px; padding: 4px 12px;">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                  </a>
+
+                  <!-- Delete Post Button -->
+                  <form action="/deletepost/{{ d.post_id }}" method="post" style="margin: 0;"
+                    onsubmit="return confirm('Are you sure you want to delete this post? This cannot be undone.');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 20px; padding: 4px 12px;">
+                      <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
             
@@ -193,3 +245,66 @@
   {% endif %}
 
 {% endblock body %}
+
+{% block scripts %}
+<script>
+// ── Carousel Arrow Dimming (First/Last Image) ────────────────────────
+function updateCarouselArrows(carousel) {
+  const items = carousel.querySelectorAll('.carousel-item');
+  const activeIndex = [...items].findIndex(item => item.classList.contains('active'));
+  const prevBtn = carousel.querySelector('.carousel-control-prev');
+  const nextBtn = carousel.querySelector('.carousel-control-next');
+  
+  if (prevBtn) {
+    if (activeIndex === 0) {
+      prevBtn.style.opacity = '0.1';
+      prevBtn.style.cursor = 'default';
+    } else {
+      prevBtn.style.opacity = '0.8';
+      prevBtn.style.cursor = 'pointer';
+    }
+  }
+  
+  if (nextBtn) {
+    if (activeIndex === items.length - 1) {
+      nextBtn.style.opacity = '0.1';
+      nextBtn.style.cursor = 'default';
+    } else {
+      nextBtn.style.opacity = '0.8';
+      nextBtn.style.cursor = 'pointer';
+    }
+  }
+}
+
+// ── Touch swipe for carousels (Instagram-style on mobile) ────────────────
+document.querySelectorAll('.carousel').forEach(function(carousel) {
+  // Initialize arrow opacity
+  updateCarouselArrows(carousel);
+  
+  // Update on slide change
+  carousel.addEventListener('slid.bs.carousel', function() {
+    updateCarouselArrows(carousel);
+  });
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  carousel.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  carousel.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carousel);
+      if (diff > 0) {
+        bsCarousel.next();   // swipe left → next image
+      } else {
+        bsCarousel.prev();   // swipe right → previous image
+      }
+    }
+  }, { passive: true });
+});
+</script>
+{% endblock scripts %}

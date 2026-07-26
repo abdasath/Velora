@@ -26,6 +26,47 @@
   <!-- Main CSS File -->
   <link href="/static/assets/css/main.css" rel="stylesheet">
 
+  <style>
+    /* Instagram-style Carousel Dot Indicators */
+    .carousel-indicators [data-bs-target] {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin: 0 4px;
+      border: none;
+      background-color: #fff;
+      opacity: 0.5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .carousel-indicators .active {
+      opacity: 1;
+      width: 9px;
+      height: 9px;
+      background-color: #fff;
+    }
+    
+    /* Carousel Arrows Visibility */
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 12%;
+    }
+    .carousel-control-prev {
+      justify-content: flex-start;
+      padding-left: 1.2rem;
+    }
+    .carousel-control-next {
+      justify-content: flex-end;
+      padding-right: 1.2rem;
+    }
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 50%;
+      background-size: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  </style>
 </head>
 
 <body class="index-page">

@@ -13,37 +13,53 @@
         <div class="card-header text-white p-4" style="background: linear-gradient(135deg, #4f46e5, #3b82f6);">
           <h4 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i> Add a New Post</h4>
         </div>
-        
+
         <div class="card-body p-3 p-md-5 bg-white">
           {% include "messages.html" %}
-            
-          <form action="/post" method="post" enctype="multipart/form-data">
+
+          <form action="/post" method="post">
             <!-- Hidden inputs -->
-            <input type="hidden" value="{{current_user.email}}" name="email"> 
-            <input type="hidden" value="{{current_user.first_name}} {{current_user.last_name}}" name="name"> 
-            
+            <input type="hidden" value="{{current_user.email}}" name="email">
+            <input type="hidden" value="{{current_user.first_name}} {{current_user.last_name}}" name="name">
+
             <div class="mb-4">
               <label for="title" class="form-label fw-bold text-secondary">Post Title</label>
-              <input class="form-control form-control-lg bg-light border-0 px-3 px-md-4 py-3" type="text" name="title" id="title" placeholder="Give your post a catchy title" required> 
+              <input class="form-control form-control-lg bg-light border-0 px-4 py-3"
+                type="text" name="title" id="title"
+                placeholder="Give your post a catchy title" required>
             </div>
 
             <div class="mb-4">
               <label for="description" class="form-label fw-bold text-secondary">Description</label>
-              <textarea class="form-control bg-light border-0 px-3 px-md-4 py-3" name="description" id="description" rows="5" placeholder="What's on your mind?" required></textarea>
+              <textarea class="form-control bg-light border-0 px-4 py-3"
+                name="description" id="description" rows="5"
+                placeholder="What's on your mind? Add #hashtags at the end!" required></textarea>
+              <small class="text-muted mt-1 d-block">
+                <i class="bi bi-hash text-primary"></i> Tip: Add hashtags like <span style="color:#1877f2;font-weight:600;">#AI #Tech #Marvel</span> at the end of your description — they'll be highlighted automatically!
+              </small>
             </div>
 
-            <div class="mb-5 p-3 p-md-4 bg-light rounded-4 border">
-              <label class="fw-bold mb-3 d-block text-dark"><i class="bi bi-link-45deg text-primary me-2"></i>Image URL</label>
-              <div class="row g-3">
-                <div class="col-md-12">
-                  <input class="form-control bg-white shadow-sm py-3" type="url" name="image_url" placeholder="https://example.com/image.jpg" required> 
-                </div>
-              </div>
-              
+            <!-- Image URLs - comma separated -->
+            <div class="mb-5 p-4 rounded-4 border" style="background: #f8f9ff;">
+              <label for="image_urls" class="fw-bold mb-1 d-block text-dark">
+                <i class="bi bi-images text-primary me-2"></i>Image URL(s)
+              </label>
+              <p class="text-muted mb-3" style="font-size: 0.88rem;">
+                Paste one URL for a single image, or paste multiple URLs separated by <strong>commas</strong> for a swipeable carousel (like Instagram).
+              </p>
+              <textarea class="form-control bg-white shadow-sm py-3 px-3"
+                name="image_urls" id="image_urls" rows="3"
+                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg, https://example.com/image3.jpg"
+                required></textarea>
+              <small class="text-muted mt-2 d-block">
+                <i class="bi bi-info-circle me-1"></i>
+                Separate multiple image links with a <strong>comma (,)</strong> — up to 10 images per post.
+              </small>
             </div>
 
-            <div class="d-grid mt-4">
-              <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" style="background: linear-gradient(135deg, #4f46e5, #3b82f6); border: none; padding: 15px;">
+            <div class="d-grid mt-2">
+              <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm"
+                style="background: linear-gradient(135deg, #4f46e5, #3b82f6); border: none; padding: 15px;">
                 Publish Post <i class="bi bi-send ms-2"></i>
               </button>
             </div>

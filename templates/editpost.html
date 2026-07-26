@@ -1,0 +1,123 @@
+{% extends "auth.html" %}
+{% block title %} Edit Post {% endblock title %}
+{% block form %}
+<h1 class="text-center fw-bold mb-3" style="color: white; font-size: 3.5rem;">Edit Post</h1>
+<p class="text-center text-white-50 mb-0" style="font-size: 1.1rem;">Update your post details below</p>
+{% endblock form %}
+
+{% block body %}
+<div class="container mt-5 mb-5" data-aos="fade-up">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow border-0 rounded-4 overflow-hidden">
+        <div class="card-header text-white p-4" style="background: linear-gradient(135deg, #4f46e5, #3b82f6);">
+          <h4 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i> Edit Post</h4>
+        </div>
+
+        <div class="card-body p-3 p-md-5 bg-white">
+          {% include "messages.html" %}
+
+          <form action="/editpost/{{ post.post_id }}" method="post">
+
+            <div class="mb-4">
+              <label for="title" class="form-label fw-bold text-secondary">Post Title</label>
+              <input class="form-control form-control-lg bg-light border-0 px-4 py-3"
+                type="text" name="title" id="title"
+                value="{{ post.title }}"
+                placeholder="Give your post a catchy title" required>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label fw-bold text-secondary">Description</label>
+              <textarea class="form-control bg-light border-0 px-4 py-3"
+                name="description" id="description" rows="6"
+                placeholder="What's on your mind?" required>{{ post.description }}</textarea>
+            </div>
+
+            <!-- Multi-image section -->
+            <div class="mb-5 p-4 rounded-4 border" style="background: #f8f9ff;">
+              <label class="fw-bold mb-1 d-block text-dark">
+                <i class="bi bi-images text-primary me-2"></i>Image URL(s)
+              </label>
+              <p class="text-muted mb-3" style="font-size: 0.88rem;">
+                Edit the URLs below. Use <strong>commas</strong> to separate multiple images for a swipeable carousel.
+                Leave unchanged to keep current images.
+              </p>
+
+              <!-- Current image previews -->
+              {% if post.image %}
+                {% set current_images = post.image.split('|') %}
+                {% if current_images|length == 1 %}
+                  <div class="mb-3 text-center">
+                    <img src="{{ current_images[0] }}" alt="Current image"
+                      class="rounded-3 border shadow-sm"
+                      style="max-height: 200px; max-width: 100%; object-fit: contain;">
+                    <p class="text-muted mt-2 mb-0" style="font-size: 0.82rem;">Current image</p>
+                  </div>
+                {% else %}
+                  <!-- Mini carousel preview of current images -->
+                  <div class="mb-3">
+                    <p class="text-muted mb-2" style="font-size: 0.82rem;">
+                      <i class="bi bi-images me-1"></i>Current images ({{ current_images|length }} photos):
+                    </p>
+                    <div id="editCarouselPreview" class="carousel slide rounded-3 border shadow-sm overflow-hidden" data-bs-ride="false">
+                      <div class="carousel-indicators">
+                        {% for img in current_images %}
+                        <button type="button" data-bs-target="#editCarouselPreview"
+                          data-bs-slide-to="{{ loop.index0 }}"
+                          {% if loop.first %}class="active" aria-current="true"{% endif %}></button>
+                        {% endfor %}
+                      </div>
+                      <div class="carousel-inner">
+                        {% for img in current_images %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                          <img src="{{ img }}" class="d-block w-100" alt="Image {{ loop.index }}"
+                            style="max-height: 220px; object-fit: contain; background:#f8f9fa;">
+                          <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-dark bg-opacity-60 rounded-pill px-2 py-1" style="font-size:0.75rem;">
+                              {{ loop.index }}/{{ current_images|length }}
+                            </span>
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                      {% if current_images|length > 1 %}
+                      <button class="carousel-control-prev" type="button" data-bs-target="#editCarouselPreview" data-bs-slide="prev" style="width:36px;">
+                        <span class="carousel-control-prev-icon"></span>
+                      </button>
+                      <button class="carousel-control-next" type="button" data-bs-target="#editCarouselPreview" data-bs-slide="next" style="width:36px;">
+                        <span class="carousel-control-next-icon"></span>
+                      </button>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endif %}
+
+              <!-- Editable comma-separated textarea pre-filled with current URLs -->
+              <textarea class="form-control bg-white shadow-sm py-3 px-3"
+                name="image_urls" id="image_urls" rows="3"
+                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg">{{ post.image.replace('|', ', ') if post.image else '' }}</textarea>
+              <small class="text-muted mt-2 d-block">
+                <i class="bi bi-info-circle me-1"></i>
+                Separate multiple image links with a <strong>comma (,)</strong>. The images above will update when you save.
+              </small>
+            </div>
+
+            <div class="d-flex gap-3">
+              <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm flex-grow-1"
+                style="background: linear-gradient(135deg, #4f46e5, #3b82f6); border: none; padding: 15px;">
+                Save Changes <i class="bi bi-check-circle ms-2"></i>
+              </button>
+              <a href="/profile" class="btn btn-outline-secondary btn-lg rounded-pill fw-bold" style="padding: 15px 25px;">
+                Cancel
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

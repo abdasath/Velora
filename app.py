@@ -101,25 +101,39 @@ def get_profile_img(user):
 @app.template_filter('timeago')
 def timeago(date_str, time_str=None):
     try:
-        if time_str:
-            dt_str = f"{date_str} {time_str}".split('.')[0]
-        else:
-            dt_str = str(date_str).split('.')[0]
-        post_time = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
         now = datetime.now()
+        post_time = None
+        
+        # Try parsing the standard datetime string (from Comments)
+        try:
+            if time_str:
+                dt_str = f"{date_str} {time_str}".split('.')[0]
+            else:
+                dt_str = str(date_str).split('.')[0]
+            post_time = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            # If that fails, parse the "Jul 26" and "20:30" format (from Posts)
+            if time_str:
+                # Assume current year for accurate time math
+                dt_str = f"{now.year} {date_str} {time_str}"
+                post_time = datetime.strptime(dt_str, '%Y %b %d %H:%M')
+            else:
+                raise ValueError("Could not parse date")
+
         diff = now - post_time
         seconds = diff.total_seconds()
         
-        if seconds < 0:
-            return "just now"
+        # Instagram style logic
         if seconds < 60:
-            return f"{int(seconds)} seconds ago"
+            return "just now"
         elif seconds < 3600:
             return f"{int(seconds // 60)} minutes ago"
-        elif seconds < 43200: # 12 hours
+        elif seconds < 86400: # 24 hours
             return f"{int(seconds // 3600)} hours ago"
+        elif seconds < 432000: # 5 days
+            return f"{int(seconds // 86400)} days ago"
         else:
-            # Over 12 hours, format as Month Day (e.g. Jan 11)
+            # Over 5 days, format as Month Day (e.g. Jan 11)
             formatted = post_time.strftime('%b %d')
             # Remove zero-padding on single digit days without relying on %-d (platform dependent)
             return formatted.replace(' 0', ' ')
@@ -267,29 +281,35 @@ def post():
         name = request.form['name']
         title = request.form['title']
         description = request.form['description']
-        image_url = request.form.get('image_url', '').strip()
+
+        # Read comma-separated image URLs from single textarea
+        raw_images = request.form.get('image_urls', '').strip()
+        image_urls = [url.strip() for url in raw_images.split(',') if url.strip()]
+
+        if not image_urls:
+            flash("Please provide at least one image URL.", "warning")
+            return redirect(url_for("post"))
+
+        # Store as pipe-separated string (used by carousel display logic)
+        image_combined = "|".join(image_urls)
 
         date = datetime.now()
-        datee = date.strftime("%b %d") # e.g. "Jul 26"
+        datee = date.strftime("%b %d")
         time = date.strftime("%H:%M")
-
-        if not image_url:
-            flash("Please provide an image URL.", "warning")
-            return redirect(url_for("post"))
 
         new_post = Post(
             email=email,
             name=name,
             title=title,
             description=description,
-            image=image_url,
+            image=image_combined,
             date=datee,
             time=time,
             likes=0
         )
         db.session.add(new_post)
         db.session.commit()
-        
+
         flash("Post uploaded successfully!", "success")
         return redirect(url_for('index'))
 
@@ -455,6 +475,35 @@ def deletepost(id):
     db.session.commit()
     flash("Post deleted successfully.", "success")
     return redirect(url_for("profile"))
+
+@app.route("/editpost/<int:id>", methods=["GET", "POST"])
+@login_required
+def editpost(id):
+    post = Post.query.filter_by(post_id=id).first()
+    if not post:
+        flash("Post not found.", "danger")
+        return redirect(url_for("profile"))
+    # Only the post owner can edit
+    if post.email != current_user.email:
+        flash("You are not authorized to edit this post.", "danger")
+        return redirect(url_for("profile"))
+
+    if request.method == "POST":
+        post.title = request.form.get("title", post.title).strip()
+        post.description = request.form.get("description", post.description).strip()
+
+        # Read comma-separated image URLs (same logic as create post)
+        raw_images = request.form.get("image_urls", "").strip()
+        if raw_images:
+            image_urls = [url.strip() for url in raw_images.split(',') if url.strip()]
+            if image_urls:
+                post.image = "|".join(image_urls)
+
+        db.session.commit()
+        flash("Post updated successfully!", "success")
+        return redirect(url_for("profile"))
+
+    return render_template("editpost.html", post=post)
 
 @app.route("/accept/<int:sender_id>", methods=["GET"])
 @login_required
