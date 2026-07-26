@@ -43,17 +43,27 @@
         <!-- Card Footer: Actions (Like, Comment) -->
         <div class="card-footer bg-white border-0 px-2 px-md-4 pb-4 pt-1">
           <div class="d-flex align-items-center mb-3">
-            <!-- Like Button -->
+            <!-- Like Button (AJAX toggle, no page reload) -->
             {% if d.post_id in liked_post_ids %}
-              <span class="text-danger me-2" style="font-size: 1.3rem; cursor: default;">
+              <button
+                class="like-btn btn btn-link p-0 me-2 text-danger"
+                data-post-id="{{d.post_id}}"
+                data-liked="true"
+                style="font-size: 1.3rem; border: none; background: none; transition: transform 0.15s;"
+              >
                 <i class="fa-solid fa-heart"></i>
-              </span>
+              </button>
             {% else %}
-              <a href="/like/{{d.post_id}}" class="text-muted me-2 text-decoration-none" style="font-size: 1.3rem; transition: color 0.2s;">
+              <button
+                class="like-btn btn btn-link p-0 me-2 text-muted"
+                data-post-id="{{d.post_id}}"
+                data-liked="false"
+                style="font-size: 1.3rem; border: none; background: none; transition: transform 0.15s;"
+              >
                 <i class="fa-regular fa-heart"></i>
-              </a>
+              </button>
             {% endif %}
-            <span class="text-muted fw-bold me-4" style="font-size: 0.95rem;">{{d.likes}} likes</span>
+            <span class="like-count text-muted fw-bold me-4" style="font-size: 0.95rem;">{{d.likes}} likes</span>
 
             <!-- View Comments -->
             <a href="/viewcomment/{{d.post_id}}" class="text-muted text-decoration-none" style="font-size: 0.95rem;">
@@ -123,3 +133,46 @@
 {% endif %}
 
 {% endblock body %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.like-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const postId = this.dataset.postId;
+    const isLiked = this.dataset.liked === 'true';
+    const icon = this.querySelector('i');
+    const likeCountEl = this.closest('.d-flex').querySelector('.like-count');
+
+    fetch('/like/' + postId, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '' }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.liked) {
+        // Just liked
+        this.dataset.liked = 'true';
+        this.classList.remove('text-muted');
+        this.classList.add('text-danger');
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+      } else {
+        // Just unliked
+        this.dataset.liked = 'false';
+        this.classList.remove('text-danger');
+        this.classList.add('text-muted');
+        icon.classList.remove('fa-solid');
+        icon.classList.add('fa-regular');
+      }
+      // Update like count without reload
+      if (likeCountEl) likeCountEl.textContent = data.likes + ' likes';
+
+      // Pop animation
+      this.style.transform = 'scale(1.35)';
+      setTimeout(() => this.style.transform = 'scale(1)', 200);
+    })
+    .catch(err => console.error('Like error:', err));
+  });
+});
+</script>
+{% endblock scripts %}

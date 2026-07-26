@@ -18,7 +18,7 @@ app.secret_key = '12345678'
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'mysql+pymysql://root:@localhost/socialmd')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'postgresql://neondb_owner:npg_nSR2LlpqG7Wg@ep-tiny-cherry-azbx8iv0-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require')
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_pre_ping": True,
     "pool_recycle": 300,
@@ -56,21 +56,21 @@ class Signup(UserMixin,db.Model):
     
 class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(50))
-    name = db.Column(db.String(100))
-    title = db.Column(db.String(100))
-    description = db.Column(db.String(500))
-    image = db.Column(db.String(500))
-    date = db.Column(db.String(500))
-    time = db.Column(db.String(500))
+    email = db.Column(db.String(200))
+    name = db.Column(db.String(200))
+    title = db.Column(db.String(300))
+    description = db.Column(db.String(5000))
+    image = db.Column(db.String(2000))
+    date = db.Column(db.String(50))
+    time = db.Column(db.String(50))
     likes = db.Column(db.Integer)
 
 class Comments(db.Model):
     comment_id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer)
-    comment= db.Column(db.String(500))
-    commentedBy = db.Column(db.String(100))
-    commentedOn = db.Column(db.String(100))
+    comment= db.Column(db.String(2000))
+    commentedBy = db.Column(db.String(200))
+    commentedOn = db.Column(db.String(200))
 
 class Friends(db.Model):
     friends_id = db.Column(db.Integer, primary_key=True)
@@ -295,20 +295,28 @@ def post():
 
     return render_template("posts.html")
 
-@app.route("/like/<int:id>", methods=['GET', 'POST'])
+@app.route("/like/<int:id>", methods=['POST'])
 @login_required
 def like(id):
-    # FIX: prevent duplicate likes
-    already_liked = Likes.query.filter_by(user_id=current_user.user_id, post_id=id).first()
-    if already_liked:
-        flash("You already liked this post!", "info")
-        return redirect(url_for("index"))
+    from flask import jsonify
     post = Post.query.filter_by(post_id=id).first()
-    if post:
-        post.likes += 1
-        db.session.add(Likes(user_id=current_user.user_id, post_id=id))
+    if not post:
+        return jsonify({'error': 'Post not found'}), 404
+
+    already_liked = Likes.query.filter_by(user_id=current_user.user_id, post_id=id).first()
+
+    if already_liked:
+        # UNLIKE: remove the like record and decrement count
+        db.session.delete(already_liked)
+        post.likes = max(0, post.likes - 1)
         db.session.commit()
-    return redirect(url_for("index"))
+        return jsonify({'liked': False, 'likes': post.likes})
+    else:
+        # LIKE: add a new like record and increment count
+        db.session.add(Likes(user_id=current_user.user_id, post_id=id))
+        post.likes += 1
+        db.session.commit()
+        return jsonify({'liked': True, 'likes': post.likes})
 
 @app.route("/comment/<int:id>", methods=["GET", "POST"])
 @login_required
