@@ -270,8 +270,8 @@ def post():
         image_url = request.form.get('image_url', '').strip()
 
         date = datetime.now()
-        datee = date.date()
-        time = date.time()
+        datee = date.strftime("%b %d") # e.g. "Jul 26"
+        time = date.strftime("%H:%M")
 
         if not image_url:
             flash("Please provide an image URL.", "warning")
