@@ -1,4 +1,0 @@
-pip install flask
-pip install -U Flask-SQLAlchemy 
-Pip install mysqlclient
-Pip install Flask-Login

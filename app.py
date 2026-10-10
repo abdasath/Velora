@@ -13,12 +13,12 @@ from flask_login import current_user
 
 localserver = True
 app = Flask(__name__)
-app.secret_key = '12345678'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev_secret_key')
 
 login_manager=LoginManager(app)
 login_manager.login_view='login'
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'postgresql://neondb_owner:npg_nSR2LlpqG7Wg@ep-tiny-cherry-azbx8iv0-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'sqlite:///velora.db')
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_pre_ping": True,
     "pool_recycle": 300,
